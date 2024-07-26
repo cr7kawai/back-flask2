@@ -14,16 +14,13 @@ app.config['MYSQL_DB'] = 'sql5722384'
 
 mysql = MySQL(app)
 
-#Prueba
 @app.route('/datos', methods=['GET'])
 def obtener_datos():
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT * FROM pregunta''')
+    cur.execute('''SELECT * FROM usuario''')
     datos = cur.fetchall()
     cur.close()
     return jsonify(datos)
-
-#Login
 
 if __name__ == '__main__':
     app.run(debug=True)
