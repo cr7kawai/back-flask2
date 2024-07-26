@@ -22,5 +22,28 @@ def obtener_datos():
     cur.close()
     return jsonify(datos)
 
+@app.route('/login', methods=['POST'])
+def login():
+    # Obtiene el username y password del cuerpo de la solicitud
+    username = request.json.get('username')
+    password = request.json.get('password')
+
+    if not username or not password:
+        return jsonify({'mensaje': 'Usuario y contraseña requeridos.', 'exito': False})
+
+    try:
+        cursor = mysql.connection.cursor()
+        # Consulta para verificar el username y password
+        sql = "SELECT nombre FROM usuario WHERE username = %s AND password = %s"
+        cursor.execute(sql, (username, password))
+        datos = cursor.fetchone()
+
+        if datos:
+            return jsonify({'nombre': datos[0], 'mensaje': 'Inicio de sesión exitoso.', 'exito': True})
+        else:
+            return jsonify({'mensaje': 'Credenciales incorrectas.', 'exito': False})
+    except Exception as ex:
+        return jsonify({'mensaje': 'Error en el servidor.', 'exito': False})
+
 if __name__ == '__main__':
     app.run(debug=True)
